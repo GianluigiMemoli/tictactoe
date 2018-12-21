@@ -4,8 +4,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class BoardGUI extends JFrame implements ActionListener {
-    BoardGUI(BoardManager BM){
-        this.BM = BM;
+    BoardGUI(Board board){
+        this.board = board;
         setLayout(new GridLayout(3,3));
         setSize(new Dimension(300, 300));
         buttonInit();
@@ -31,22 +31,30 @@ public class BoardGUI extends JFrame implements ActionListener {
         JButton pressed = (JButton) e.getSource();
 
         System.out.println("BtnName: "+pressed.getText());
-        //Parsing the move, for passing it as parameter to the BoardManager obj
+        //Parsing the move, for passing it as parameter to the Board obj
         int move = Integer.parseInt(pressed.getText());
         //Making the text visible
         pressed.setForeground(Color.BLACK);
-        BM.insertMove(move);
-        pressed.setText(BM.getPlayer()+"");
+        board.insertMove(move);
+        pressed.setText(board.getPlayer()+"");
 
-        if(BM.STATE == 0)
+        if(board.STATE == 0)
             JOptionPane.showMessageDialog(null, "DRAW!");
-        else if(BM.STATE == 1)
-            JOptionPane.showMessageDialog(null, BM.getPlayer()+" WINS!");
+        else if(board.STATE == 1)
+            JOptionPane.showMessageDialog(null, board.getPlayer()+" WINS!");
+
+        System.out.println("Original: "+ board.toString());
+
+        try{
+            System.out.println("Clone: "+ ((Board) board.clone()).toString());
+        }catch (CloneNotSupportedException ec){
+            ec.printStackTrace();
+        }
 
 
 
 
     }
 
-    private BoardManager BM;
+    private Board board;
 }

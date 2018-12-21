@@ -1,12 +1,20 @@
-public class BoardManager {
-    BoardManager(){
+public class Board implements Cloneable{
+    Board(){
         table = new char[9];
         for(int i=0; i < 9; i++)
             table[i] = ' ';
         player = '-';
         availables = 9;
         STATE = -2;
+        lastMove = -1;
     }
+
+
+    @Override
+    public Object clone()throws CloneNotSupportedException{
+        return super.clone();
+    }
+
 
     //switches from X to O & viceversa
     private void switchPlayer(){
@@ -35,7 +43,18 @@ public class BoardManager {
         }
         table[move] = player;
         availables--;
+        lastMove = move;
         evalueate();
+    }
+
+    public String getRemaining(){
+        //This function will return the remaining
+        String s ="";
+        for(int i=0; i < 9; i++) {
+            if(table[i] == ' ')
+                s+=""+i;
+        }
+        return s;
     }
 
     public void evalueate(){
@@ -67,8 +86,15 @@ public class BoardManager {
 
     }
 
+
+
+
     public char getPlayer(){
         return player;
+    }
+
+    public String toString(){
+        return getRemaining();
     }
 
     private final char X = 'X';
@@ -76,5 +102,6 @@ public class BoardManager {
     private char[] table;
     private char   player;
     public int STATE;
-    int availables;
+    public int availables;
+    public int lastMove;
 }
