@@ -7,6 +7,7 @@ public class Board implements Cloneable{
         availables = 9;
         STATE = -2;
         lastMove = -1;
+        STATE = -1;
     }
 
 
@@ -61,27 +62,28 @@ public class Board implements Cloneable{
         //retVal will be -1 for no win no draw, 1 for win, 0 for draw
         int retVal = -1;
         //check the horizontal lines
-        if(table[0] == player && table[1] == player && table[2] == player)
-            retVal = 1;
-        else if(table[3] == player && table[4] == player && table[5] == player)
-            retVal = 1;
-        else if(table[6] == player && table[7] == player && table[8] == player)
-            retVal = 1;
-        //now check the vertical lines
-        else if(table[0] == player && table[3] == player && table[6] == player)
-            retVal = 1;
-        else if(table[1] == player && table[4] == player && table[7] == player)
-            retVal = 1;
-        else if(table[2] == player && table[5] == player && table[8] == player)
-            retVal = 1;
-        //now the diagonals
-        else if(table[0] == player && table[4] == player && table[8] == player)
-            retVal = 1;
-        else if(table[2] == player && table[4] == player && table[6] == player)
-            retVal = 1;
-        else if(availables == 0)
-            retVal = 0;
-
+        if(availables == 9) {
+            if (table[0] == player && table[1] == player && table[2] == player)
+                retVal = 1;
+            else if (table[3] == player && table[4] == player && table[5] == player)
+                retVal = 1;
+            else if (table[6] == player && table[7] == player && table[8] == player)
+                retVal = 1;
+                //now check the vertical lines
+            else if (table[0] == player && table[3] == player && table[6] == player)
+                retVal = 1;
+            else if (table[1] == player && table[4] == player && table[7] == player)
+                retVal = 1;
+            else if (table[2] == player && table[5] == player && table[8] == player)
+                retVal = 1;
+                //now the diagonals
+            else if (table[0] == player && table[4] == player && table[8] == player)
+                retVal = 1;
+            else if (table[2] == player && table[4] == player && table[6] == player)
+                retVal = 1;
+            else if (availables == 0)
+                retVal = 0;
+        }
         STATE = retVal;
 
     }

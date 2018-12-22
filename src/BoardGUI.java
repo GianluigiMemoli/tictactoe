@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 
 public class BoardGUI extends JFrame implements ActionListener {
     BoardGUI(Board board){
+        Player p = new Player(board);
         this.board = board;
         setLayout(new GridLayout(3,3));
         setSize(new Dimension(300, 300));
