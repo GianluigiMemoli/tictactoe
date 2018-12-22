@@ -3,9 +3,8 @@ public class Board implements Cloneable{
         table = new char[9];
         for(int i=0; i < 9; i++)
             table[i] = ' ';
-        player = '-';
+        player = X;
         availables = 9;
-        STATE = -2;
         lastMove = -1;
         STATE = -1;
     }
@@ -13,7 +12,9 @@ public class Board implements Cloneable{
 
     @Override
     public Object clone()throws CloneNotSupportedException{
-        return super.clone();
+        Board b =(Board) super.clone();
+        b.table = this.table.clone();
+        return b;
     }
 
 
@@ -37,7 +38,6 @@ public class Board implements Cloneable{
 
     public void insertMove(int move){
         //If player is not initialized, it will be init as X
-        switchPlayer();
         if(table[move] != ' '){
             switchPlayer();
             return;
@@ -58,11 +58,38 @@ public class Board implements Cloneable{
         return s;
     }
 
+    public String getTable(){
+        String s = "";
+        for(int i=0; i < 9; i++)
+            if(table[i] == ' ')
+                s+=i+"";
+            else s+=table[i];
+       // System.out.println("From func getTable: "+s);
+
+        return s;
+    }
+
+   /*public String getTable(){
+       String t = "\n";
+       for(int i=0; i < 3; i++)
+           t+=table[i];
+       t+='\n';
+       for(int i=3; i < 6; i++)
+           t+=table[i];
+       t+='\n';
+       for(int i=6; i < 9; i++)
+           t+=table[i];
+       t+='\n';
+
+       return t;
+
+   }*/
+
     public void evalueate(){
         //retVal will be -1 for no win no draw, 1 for win, 0 for draw
         int retVal = -1;
         //check the horizontal lines
-        if(availables == 9) {
+
             if (table[0] == player && table[1] == player && table[2] == player)
                 retVal = 1;
             else if (table[3] == player && table[4] == player && table[5] == player)
@@ -83,9 +110,10 @@ public class Board implements Cloneable{
                 retVal = 1;
             else if (availables == 0)
                 retVal = 0;
-        }
-        STATE = retVal;
 
+        STATE = retVal;
+        if(STATE == -1)
+            switchPlayer();
     }
 
 

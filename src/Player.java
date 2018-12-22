@@ -5,66 +5,53 @@ public class Player {
     Player(Board b) throws CloneNotSupportedException {
         max = b.getPlayer();
         minimax(b);
-
         initNumMoves = b.availables;
     }
 
-/*
-    public int minimax(Board b) throws CloneNotSupportedException {
 
-        String canMove = b.getRemaining();
-        int nStates = canMove.length();
-        if(nStates > 0) {
-            ArrayList<Board> states = new ArrayList<>();
-            int scores[] = new int[nStates];
-            //Load ArrayList of snapshots
-            for (int i = 0; i < nStates; i++) {
-                Board bAdd = (Board) b.clone();
-                states.add(bAdd);
-            }
-            //Load scores and launch recursive function
-            for (int i = 0; i < nStates; i++)
-                scores[i] = minimax(states.remove(i));
+    private int minimax(Board b) throws CloneNotSupportedException {
+      if(b.STATE == -1) {
+          ArrayList<Board> states = new ArrayList<Board>();
+          String remaining = b.getRemaining();
+          ArrayList<Integer> scores = new ArrayList<Integer>();
 
-        }
-        else{
-            return b.STATE;
-        }
+          //System.out.println("Remaining: " + remaining);
+          //System.out.println("InitTable="+b.getTable());
+          for (int i = 0; i < 9; i++) {
+              if (remaining.contains(i + "")) {
+
+                  Board clone = (Board) b.clone();
+                  clone.insertMove(i);
+             /*   //System.out.println("Pre-Table #"+i);
+                //System.out.println(clone.getTable()+"\n");
+                //System.out.println("B-Table #"+i);
+                //System.out.println(b.getTable()+"\n");*/
+                  states.add(clone);
+              }
+          }
+          //System.out.println("|States| = "+states.size());
+          for (int i = 0; i < states.size(); i++) {
+              //System.out.println("Table #" + i);
+              //System.out.println(states.get(i).getTable() + "\n");
+              scores.add(minimax(states.get(i)));
+              //System.out.println("AddingScores");
+          }
+          int maxInd = 0;
+          for(int i=0; i < scores.size(); i++){
+              if(scores.get(i) > scores.get(maxInd))
+                  maxInd=i;
+          }
+          move = states.get(maxInd).lastMove;
+          //System.out.println("move:"+move);
+          return scores.get(maxInd);
+      }
+      else{
+          //System.out.println("ELSETABLE="+b.getTable());
+          return getScore(b.STATE, b.getPlayer());
+      }
     }
-*/
 
-    public void minimax(Board b) throws CloneNotSupportedException {
-        scores = new ArrayList<Integer>();
-        snapShots = new ArrayList<Board>();
-        if (b.STATE == -1) {
-            String left = b.getRemaining();
-            for (int i = 0; i < b.getRemaining().length(); i++) {
-                left = b.getRemaining();
-                if (left.contains(i + "")) {
-                    Board clone = (Board) b.clone();
-                    clone.insertMove(i);
-                    minimax(clone);
-                    if (clone.STATE != -1) {
-                        scores.add(getScore(b.STATE, b.getPlayer()));
-                        snapShots.add(clone);
-                    }
-                }
 
-                }
-            System.out.println("Score: " + scores.size());
-            System.out.println("Snapshots: " + snapShots.size());
-            int max = 0;
-            for(int i=0; i < scores.size(); i++){
-                if(scores.get(i) > scores.get(max)) {
-                    max = i;
-                    move = b.lastMove;
-                }
-            }
-
-        } else {
-            System.out.println("move: "+move);
-        }
-    }
 
     private int getScore(int state, char player){
         if(state == -1)
@@ -78,10 +65,15 @@ public class Player {
         return state;
     }
 
-    int max;
+    char max;
     public int move = -1;
-    private ArrayList<Integer> scores;
-    private ArrayList<Board> snapShots;
     private int initNumMoves;
+    public Board boardz;
 
 }
+/*
+* X0-
+* -X0
+* X0X
+*
+* */

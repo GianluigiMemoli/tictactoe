@@ -5,7 +5,6 @@ import java.awt.event.ActionListener;
 
 public class BoardGUI extends JFrame implements ActionListener {
     BoardGUI(Board board){
-        Player p = new Player(board);
         this.board = board;
         setLayout(new GridLayout(3,3));
         setSize(new Dimension(300, 300));
@@ -15,7 +14,7 @@ public class BoardGUI extends JFrame implements ActionListener {
     private void buttonInit(){
         /*The buttons are from 0 to 8*/
 
-        JButton b[] = new JButton[9];
+        b = new JButton[9];
         for(int i=0; i < 9; i++) {
             b[i] = new JButton(""+i);
             //Making the text invisible
@@ -25,6 +24,16 @@ public class BoardGUI extends JFrame implements ActionListener {
         }
     }
 
+    private  void setTable(){
+        String s = board.getTable();
+        for(int i=0; i < 9; i++) {
+            b[i].setText(s.charAt(i)+"");
+            if(Character.isDigit(s.charAt(i)))
+                b[i].setForeground(b[i].getBackground());
+            else
+                b[i].setForeground(Color.BLACK);
+        }
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -35,27 +44,32 @@ public class BoardGUI extends JFrame implements ActionListener {
         //Parsing the move, for passing it as parameter to the Board obj
         int move = Integer.parseInt(pressed.getText());
         //Making the text visible
-        pressed.setForeground(Color.BLACK);
+       // pressed.setForeground(Color.BLACK);
         board.insertMove(move);
-        pressed.setText(board.getPlayer()+"");
+        setTable();
+
+        try {
+            p = new Player((Board)board.clone());
+            System.out.println("move: "+p.move);
+            board.insertMove(p.move);
+            setTable();
+        } catch (CloneNotSupportedException e1) {
+            e1.printStackTrace();
+        }
+        System.out.println("Avail: "+board.availables);
+
+        String table = board.getTable();
+        System.out.println(table);
 
         if(board.STATE == 0)
             JOptionPane.showMessageDialog(null, "DRAW!");
         else if(board.STATE == 1)
             JOptionPane.showMessageDialog(null, board.getPlayer()+" WINS!");
 
-        System.out.println("Original: "+ board.toString());
-
-        try{
-            System.out.println("Clone: "+ ((Board) board.clone()).toString());
-        }catch (CloneNotSupportedException ec){
-            ec.printStackTrace();
-        }
-
-
 
 
     }
-
+    private JButton b[];
+    private Player p;
     private Board board;
 }
