@@ -14,44 +14,49 @@ public class Player {
           ArrayList<Board> states = new ArrayList<Board>();
           String remaining = b.getRemaining();
           ArrayList<Integer> scores = new ArrayList<Integer>();
-
-          //System.out.println("Remaining: " + remaining);
-          //System.out.println("InitTable="+b.getTable());
+          //Loading states ArrayList with all the possible move that player can do
           for (int i = 0; i < 9; i++) {
               if (remaining.contains(i + "")) {
-
                   Board clone = (Board) b.clone();
                   clone.insertMove(i);
-             /*   //System.out.println("Pre-Table #"+i);
-                //System.out.println(clone.getTable()+"\n");
-                //System.out.println("B-Table #"+i);
-                //System.out.println(b.getTable()+"\n");*/
                   states.add(clone);
               }
           }
-          //System.out.println("|States| = "+states.size());
+          //Lunching recursion on every state, getting from each one the score
           for (int i = 0; i < states.size(); i++) {
-              //System.out.println("Table #" + i);
-              //System.out.println(states.get(i).getTable() + "\n");
               scores.add(minimax(states.get(i)));
-              //System.out.println("AddingScores");
           }
           int maxInd = 0;
+
+
+          //Chosing the best move to take
           for(int i=0; i < scores.size(); i++){
               if(scores.get(i) > scores.get(maxInd))
                   maxInd=i;
           }
           move = states.get(maxInd).lastMove;
-          //System.out.println("move:"+move);
+          statesTmp = states;
+          scoresTmp  = scores;
           return scores.get(maxInd);
       }
       else{
-          //System.out.println("ELSETABLE="+b.getTable());
-          return getScore(b.STATE, b.getPlayer());
+          return getScore(b.STATE);
       }
     }
 
+    public void log(){
+        System.out.println("Every possible move");
+        int i=0;
+        for(Board b : statesTmp) {
+            System.out.println("Board#"+ ++i);
+            System.out.println(b.getTable());
+            System.out.println(b.lastMove);
+            System.out.println("Availables:"+b.availables);
+            System.out.println("State:"+b.STATE);
 
+        }
+        System.out.println("The move taken\n"+move);
+    }
 
     private int getScore(int state, char player){
         if(state == -1)
@@ -65,15 +70,21 @@ public class Player {
         return state;
     }
 
+    private int getScore(int state){
+        if(state == -1)
+            return -10;
+        if(state == 1){
+            return 10;
+
+        }
+        return state;
+    }
+
     char max;
     public int move = -1;
     private int initNumMoves;
     public Board boardz;
+    private ArrayList<Board> statesTmp;
+    private ArrayList<Integer> scoresTmp;
 
 }
-/*
-* X0-
-* -X0
-* X0X
-*
-* */

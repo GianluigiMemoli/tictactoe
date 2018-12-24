@@ -9,6 +9,7 @@ public class BoardGUI extends JFrame implements ActionListener {
         setLayout(new GridLayout(3,3));
         setSize(new Dimension(300, 300));
         buttonInit();
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
     private void buttonInit(){
@@ -51,8 +52,12 @@ public class BoardGUI extends JFrame implements ActionListener {
         try {
             p = new Player((Board)board.clone());
             System.out.println("move: "+p.move);
-            board.insertMove(p.move);
-            setTable();
+            move = p.move;
+            p.log();
+            if(move != -1) {
+                board.insertMove(p.move);
+                setTable();
+            }
         } catch (CloneNotSupportedException e1) {
             e1.printStackTrace();
         }
@@ -61,10 +66,14 @@ public class BoardGUI extends JFrame implements ActionListener {
         String table = board.getTable();
         System.out.println(table);
 
-        if(board.STATE == 0)
+        if(board.STATE == 0) {
             JOptionPane.showMessageDialog(null, "DRAW!");
-        else if(board.STATE == 1)
-            JOptionPane.showMessageDialog(null, board.getPlayer()+" WINS!");
+            System.exit(0);
+        }
+        else if(board.STATE == 1) {
+            JOptionPane.showMessageDialog(null, board.getPlayer() + " WINS!");
+            System.exit(0);
+        }
 
 
 
