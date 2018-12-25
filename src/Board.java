@@ -68,8 +68,8 @@ public class Board implements Cloneable{
 
         return s;
     }
-
-   /*public String getTable(){
+/*
+   public String getTable(){
        String t = "\n";
        for(int i=0; i < 3; i++)
            t+=table[i];
@@ -79,12 +79,12 @@ public class Board implements Cloneable{
        t+='\n';
        for(int i=6; i < 9; i++)
            t+=table[i];
-       t+='\n';
+       t+="\n-------------------\n";
 
        return t;
 
-   }*/
-
+   }
+*/
     public void evalueate(){
         //retVal will be -1 for no win no draw, 1 for win, 0 for draw
         int retVal = -1;

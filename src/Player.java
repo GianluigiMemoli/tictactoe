@@ -3,45 +3,65 @@ import java.util.ArrayList;
 public class Player {
 
     Player(Board b) throws CloneNotSupportedException {
-        max = b.getPlayer();
-        minimax(b);
-        initNumMoves = b.availables;
+
     }
 
+    public ArrayList<Node<Board>> fillTree(Board b) throws CloneNotSupportedException {
+        Node<Board> tree = new Node<Board>(b);
+        minimax(tree);
+        ArrayList<Node<Board>> fromTree = new ArrayList<>();
+        tree.preOrder(fromTree);
+        return fromTree;
+    }
 
-    private int minimax(Board b) throws CloneNotSupportedException {
-      if(b.STATE == -1) {
-          ArrayList<Board> states = new ArrayList<Board>();
-          String remaining = b.getRemaining();
-          ArrayList<Integer> scores = new ArrayList<Integer>();
-          //Loading states ArrayList with all the possible move that player can do
-          for (int i = 0; i < 9; i++) {
-              if (remaining.contains(i + "")) {
-                  Board clone = (Board) b.clone();
-                  clone.insertMove(i);
-                  states.add(clone);
-              }
-          }
-          //Lunching recursion on every state, getting from each one the score
-          for (int i = 0; i < states.size(); i++) {
-              scores.add(minimax(states.get(i)));
-          }
-          int maxInd = 0;
+    public int getMove(Board b) throws CloneNotSupportedException {
+        max = b.getPlayer();
+
+        ArrayList<Node<Board>> states = fillTree(b);
+        ArrayList<Node<Board>> toFilter = new ArrayList<>();
+
+        for(Node n : states){
+            Board curr = (Board) n.getData();
+            if(getScore(curr.STATE, curr.getPlayer()) >= 0){
+                toFilter.add(n);
+            }
+        }
+
+        int max = 0;
+        Board cmp1, cmp2;
+        for(int i=0; i < toFilter.size(); i++){
+            System.out.print("Cerco\n");
+            cmp1 = toFilter.get(max).getData();
+            cmp2 = toFilter.get(i).getData();
+            if(cmp1.availables < cmp2.availables){
+                max = i;
+            }
+        }
+
+        Node tmp = toFilter.get(max);
+        while(tmp.getParent() != null &&!(tmp.getParent()).isRoot())
+            tmp = tmp.getParent();
+        return ((Board) tmp.getData()).lastMove;
 
 
-          //Chosing the best move to take
-          for(int i=0; i < scores.size(); i++){
-              if(scores.get(i) > scores.get(maxInd))
-                  maxInd=i;
-          }
-          move = states.get(maxInd).lastMove;
-          statesTmp = states;
-          scoresTmp  = scores;
-          return scores.get(maxInd);
-      }
-      else{
-          return getScore(b.STATE);
-      }
+    }
+
+    public void minimax(Node<Board> tree) throws CloneNotSupportedException {
+        Board fromNode = tree.getData();
+        String remaining = fromNode.getRemaining();
+        for(int i=0; i < 9; i++){
+            if(remaining.contains(i+"")) {
+                Board cloned =(Board) fromNode.clone();
+                cloned.insertMove(i);
+                tree.addChild(cloned);
+            }
+        }
+        ArrayList<Node> states = (ArrayList<Node>) tree.getChildren();
+        for(Node n : states){
+            if(( (Board) n.getData() ).STATE == -1 ){
+                minimax(n);
+            }
+        }
     }
 
     public void log(){
@@ -86,5 +106,6 @@ public class Player {
     public Board boardz;
     private ArrayList<Board> statesTmp;
     private ArrayList<Integer> scoresTmp;
+   // private Node<Board> tree;
 
 }

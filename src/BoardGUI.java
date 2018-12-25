@@ -4,12 +4,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class BoardGUI extends JFrame implements ActionListener {
-    BoardGUI(Board board){
+    BoardGUI(Board board) throws CloneNotSupportedException {
         this.board = board;
         setLayout(new GridLayout(3,3));
         setSize(new Dimension(300, 300));
         buttonInit();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        p = new Player(board);
     }
 
     private void buttonInit(){
@@ -48,18 +49,16 @@ public class BoardGUI extends JFrame implements ActionListener {
        // pressed.setForeground(Color.BLACK);
         board.insertMove(move);
         setTable();
-
-        try {
-            p = new Player((Board)board.clone());
-            System.out.println("move: "+p.move);
-            move = p.move;
-            p.log();
-            if(move != -1) {
-                board.insertMove(p.move);
-                setTable();
+        if(board.availables > 0) {
+            try {
+                move = p.getMove(board);
+                if (move != -1) {
+                    board.insertMove(move);
+                    setTable();
+                }
+            } catch (CloneNotSupportedException e1) {
+                e1.printStackTrace();
             }
-        } catch (CloneNotSupportedException e1) {
-            e1.printStackTrace();
         }
         System.out.println("Avail: "+board.availables);
 
