@@ -1,1 +1,2 @@
-Change the PlayerClass, use Tree
+Implement a scoring system more efficient
+Save an euristic score from tree's leaf

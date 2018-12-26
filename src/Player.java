@@ -46,9 +46,10 @@ public class Player {
 
     }
 
-    public void minimax(Node<Board> tree) throws CloneNotSupportedException {
+    public void minimax(Node<Board> tree, ArrayList<>) throws CloneNotSupportedException {
         Board fromNode = tree.getData();
         String remaining = fromNode.getRemaining();
+        /*Loading states*/
         for(int i=0; i < 9; i++){
             if(remaining.contains(i+"")) {
                 Board cloned =(Board) fromNode.clone();
@@ -56,6 +57,7 @@ public class Player {
                 tree.addChild(cloned);
             }
         }
+        //Recursive on
         ArrayList<Node> states = (ArrayList<Node>) tree.getChildren();
         for(Node n : states){
             if(( (Board) n.getData() ).STATE == -1 ){
@@ -63,6 +65,8 @@ public class Player {
             }
         }
     }
+
+
 
     public void log(){
         System.out.println("Every possible move");

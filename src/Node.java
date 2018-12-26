@@ -4,8 +4,10 @@
 * */
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 public class Node<T> {
 
@@ -46,22 +48,29 @@ public class Node<T> {
         return this.data;
     }
 
-    public void preOrder(ArrayList<Node<T>> visit) {
+    public int getDepth() throws IOException {
+        if(lock)
+            throw new IOException("preOrder() never called");
+        return depth;
+    }
+
+    public void preOrder(ArrayList<Node<T>> visit, int h) {
+        lock = false;
         if(this.isRoot()) {
             visit.add(this);
         }
-
+        depth=h;
         for(Node n : children)
             visit.add(n);
 
         for(Node n : children)
-            n.preOrder(visit);
+            n.preOrder(visit, depth+1);
 
     }
 
 
-
-
+    private boolean lock = true;
+    private int depth=0;
     T data;
     Node<T> parent;
     List<Node<T>> children;
