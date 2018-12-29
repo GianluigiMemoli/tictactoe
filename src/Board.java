@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Board implements Cloneable{
     Board(){
         table = new char[9];
@@ -7,6 +9,9 @@ public class Board implements Cloneable{
         availables = 9;
         lastMove = -1;
         STATE = -1;
+        winner = '-';
+        //That will contain objects that are listening for onBoardUpdate event
+        listeners = new ArrayList<MoveListener> ();
     }
 
 
@@ -14,8 +19,14 @@ public class Board implements Cloneable{
     public Object clone()throws CloneNotSupportedException{
         Board b =(Board) super.clone();
         b.table = this.table.clone();
+        b.listeners = new ArrayList<MoveListener> ();
         return b;
     }
+
+    public void addListener(MoveListener listener){
+        listeners.add(listener);
+    }
+
 
 
     //switches from X to O & viceversa
@@ -68,23 +79,7 @@ public class Board implements Cloneable{
 
         return s;
     }
-/*
-   public String getTable(){
-       String t = "\n";
-       for(int i=0; i < 3; i++)
-           t+=table[i];
-       t+='\n';
-       for(int i=3; i < 6; i++)
-           t+=table[i];
-       t+='\n';
-       for(int i=6; i < 9; i++)
-           t+=table[i];
-       t+="\n-------------------\n";
 
-       return t;
-
-   }
-*/
     public void evalueate(){
         //retVal will be -1 for no win no draw, 1 for win, 0 for draw
         int retVal = -1;
@@ -111,9 +106,14 @@ public class Board implements Cloneable{
             else if (availables == 0)
                 retVal = 0;
 
+        for(MoveListener l : listeners)
+            l.onBoardUpdated();
+
         STATE = retVal;
         if(STATE == -1)
             switchPlayer();
+        else if(STATE == 1)
+            winner = player;
     }
 
 
@@ -127,6 +127,7 @@ public class Board implements Cloneable{
         return getRemaining();
     }
 
+    private ArrayList<MoveListener> listeners;
     private final char X = 'X';
     private final char O = 'O';
     private char[] table;
@@ -134,4 +135,5 @@ public class Board implements Cloneable{
     public int STATE;
     public int availables;
     public int lastMove;
+    public char winner;
 }

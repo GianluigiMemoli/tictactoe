@@ -3,14 +3,14 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class BoardGUI extends JFrame implements ActionListener {
+public class BoardGUI extends JFrame implements ActionListener, MoveListener {
     BoardGUI(Board board) throws CloneNotSupportedException {
         this.board = board;
+        this.board.addListener(this);
         setLayout(new GridLayout(3,3));
         setSize(new Dimension(300, 300));
         buttonInit();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        p = new Player(board);
     }
 
     private void buttonInit(){
@@ -26,7 +26,7 @@ public class BoardGUI extends JFrame implements ActionListener {
         }
     }
 
-    private  void setTable(){
+    private void setTable(){
         String s = board.getTable();
         for(int i=0; i < 9; i++) {
             b[i].setText(s.charAt(i)+"");
@@ -42,28 +42,25 @@ public class BoardGUI extends JFrame implements ActionListener {
         //Getting the move relative to the button
         JButton pressed = (JButton) e.getSource();
 
-        System.out.println("BtnName: "+pressed.getText());
         //Parsing the move, for passing it as parameter to the Board obj
         int move = Integer.parseInt(pressed.getText());
-        //Making the text visible
-       // pressed.setForeground(Color.BLACK);
+
         board.insertMove(move);
-        setTable();
+      //  setTable();
         if(board.availables > 0) {
             try {
-                move = p.getMove(board);
+                Score x = Player.minimax(board, true, 0);
+                move = x.getMove();
                 if (move != -1) {
                     board.insertMove(move);
-                    setTable();
+                    //setTable();
                 }
             } catch (CloneNotSupportedException e1) {
                 e1.printStackTrace();
             }
         }
-        System.out.println("Avail: "+board.availables);
 
         String table = board.getTable();
-        System.out.println(table);
 
         if(board.STATE == 0) {
             JOptionPane.showMessageDialog(null, "DRAW!");
@@ -78,6 +75,10 @@ public class BoardGUI extends JFrame implements ActionListener {
 
     }
     private JButton b[];
-    private Player p;
     private Board board;
+
+    @Override
+    public void onBoardUpdated() {
+        setTable();
+    }
 }
